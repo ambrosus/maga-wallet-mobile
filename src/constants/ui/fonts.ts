@@ -10,6 +10,7 @@ export const FONT_SIZE = {
     lg: 18
   },
   body: {
+    xl: 18,
     lg: 16,
     md: 14,
     sm: 12

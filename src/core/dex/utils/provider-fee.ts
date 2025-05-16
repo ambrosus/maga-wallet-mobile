@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { devLogger } from '@utils';
 import { createAMBProvider } from './contracts/instances';
 
 const LIQUIDITY_PROVIDER_FEE = 0.003;
@@ -48,6 +49,9 @@ export async function wrapEstimatedGas(
   methodName: string,
   args: any[]
 ) {
+  devLogger(`🟢 Method name ${methodName}`);
+  devLogger(`🟢 Args ${JSON.stringify(args)}`);
+
   const isERC20Method = ['deposit', 'withdraw'].includes(methodName);
   const provider = createAMBProvider();
   try {
@@ -77,8 +81,8 @@ export async function wrapEstimatedGas(
     );
 
     return gasWithMargin.mul(adjustedGasPrice);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error('Error (wrapEstimatedGas)', error);
     return ethers.BigNumber.from(0);
   }
 }

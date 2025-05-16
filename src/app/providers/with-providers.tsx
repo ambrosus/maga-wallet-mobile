@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Toast } from '@components/molecules';
 import { FLEX_FULL_SIZE } from '@constants';
 import { SwapContextProvider } from '@core/dex/context';
+import { ApolloClientProvider } from './apollo-client';
 import { LocalizationProvider } from './localization';
 import { NavigationProvider } from './navigation';
 import { SafeContainerProvider } from './safe-area';
@@ -10,16 +11,18 @@ import { SafeContainerProvider } from './safe-area';
 export const WrappedAppWithProviders = () => {
   return (
     <GestureHandlerRootView style={FLEX_FULL_SIZE}>
-      <BottomSheetModalProvider>
-        <SafeContainerProvider>
-          <LocalizationProvider>
+      <SafeContainerProvider>
+        <LocalizationProvider>
+          <ApolloClientProvider>
             <SwapContextProvider>
-              <NavigationProvider />
-              <Toast />
+              <BottomSheetModalProvider>
+                <NavigationProvider />
+                <Toast />
+              </BottomSheetModalProvider>
             </SwapContextProvider>
-          </LocalizationProvider>
-        </SafeContainerProvider>
-      </BottomSheetModalProvider>
+          </ApolloClientProvider>
+        </LocalizationProvider>
+      </SafeContainerProvider>
     </GestureHandlerRootView>
   );
 };

@@ -1,25 +1,22 @@
 import { useMemo } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { Typography, Spacer } from '@components/atoms';
 import { TokenLogo } from '@components/molecules';
-import { COLORS } from '@constants';
+import { COLORS, FONT_SIZE } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
+import { useSwapReviewTransformer } from '@core/dex/lib/hooks';
 import { FIELD } from '@core/dex/types';
 import { SwapStringUtils } from '@core/dex/utils';
 import { verticalScale } from '@utils';
 import { styles } from './styles';
 
-interface BottomSheetReviewTokenItemProps {
+interface SwapReviewTokenItemProps {
   type: keyof typeof FIELD;
 }
 
-export const BottomSheetReviewTokenItem = ({
-  type
-}: BottomSheetReviewTokenItemProps) => {
-  const { t } = useTranslation();
-  const label = type === FIELD.TOKEN_A ? t('swap.pay') : t('swap.receive');
-  const { selectedTokens, selectedTokensAmount } = useSwapContextSelector();
+export const SwapReviewTokenItem = ({ type }: SwapReviewTokenItemProps) => {
+  const { selectedTokens } = useSwapContextSelector();
+  const { label, amount } = useSwapReviewTransformer(type);
 
   const token = SwapStringUtils.extendedLogoVariants(
     selectedTokens[type]?.symbol ?? ''
@@ -36,7 +33,7 @@ export const BottomSheetReviewTokenItem = ({
   return (
     <View style={combinedTypeContainerStyle}>
       <Typography
-        fontSize={13}
+        fontSize={FONT_SIZE.body.lg}
         fontFamily="Onest600SemiBold"
         color={COLORS.neutral500}
       >
@@ -46,11 +43,11 @@ export const BottomSheetReviewTokenItem = ({
         <TokenLogo token={token} scale={0.65} />
         <Spacer horizontal value={4} />
         <Typography
-          fontSize={17}
+          fontSize={FONT_SIZE.body.xl}
           fontFamily="Onest600SemiBold"
-          color={COLORS.neutral800}
+          color={COLORS.textPrimary}
         >
-          {SwapStringUtils.transformAmountValue(selectedTokensAmount[type])}{' '}
+          {SwapStringUtils.transformAmountValue(amount)}{' '}
           {selectedTokens[type]?.symbol}
         </Typography>
       </View>

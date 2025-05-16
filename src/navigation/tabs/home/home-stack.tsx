@@ -1,6 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { DEXScreen } from '@screens';
-import { DexReviewSwapScreen, DexSettingsScreen } from '@screens/dex/screens';
+import {
+  DexReviewSwapScreen,
+  DexSettingsScreen,
+  DexSuccessScreen
+} from '@screens/dex/screens';
 import { HomeScreen } from '@screens/home';
 import { HOME_STACK_ROUTES, HomeTabParamsList } from './types';
 
@@ -32,6 +36,10 @@ export const HomeStack = () => {
           <Stack.Screen
             name={HOME_STACK_ROUTES.DexSettingsScreen}
             component={DexSettingsScreen}
+          />
+          <Stack.Screen
+            name={HOME_STACK_ROUTES.DexSuccessScreen}
+            component={DexSuccessScreen}
           />
         </Stack.Group>
       </Stack.Navigator>

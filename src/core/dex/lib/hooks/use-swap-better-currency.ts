@@ -426,7 +426,10 @@ export function useSwapBetterCurrency() {
     async (
       amountToSell: string,
       path: string[],
-      { changeUiHopArray = false }: { changeUiHopArray?: boolean } = {}
+      {
+        changeUiHopArray = false,
+        argsMultihops
+      }: { changeUiHopArray?: boolean; argsMultihops?: boolean } = {}
     ) => {
       setIsWarningToEnableMultihopActive(false);
       resetMultiHopUiState();
@@ -436,11 +439,13 @@ export function useSwapBetterCurrency() {
       const { multihops } = settings.current;
       const tradeIn = isExactInRef.current;
 
+      const isMultihops = argsMultihops ?? multihops;
+
       return tradeIn
-        ? bestTradeExactOut(amountToSell, path, multihops, {
+        ? bestTradeExactOut(amountToSell, path, isMultihops, {
             changeUiHopArray
           })
-        : bestTradeExactIn(amountToSell, path, multihops, {
+        : bestTradeExactIn(amountToSell, path, isMultihops, {
             changeUiHopArray
           });
     },

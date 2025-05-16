@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 // } from '@lib/firebaseEventAnalytics';
 import { ethers } from 'ethers';
 import { useSwapContextSelector } from '@core/dex/context';
+import { AllowanceStatus } from '@core/dex/types';
 import {
   calculateAllowanceWithProviderFee,
   isETHtoWrapped,
@@ -13,6 +14,7 @@ import {
 } from '@core/dex/utils';
 import { createSigner } from '@core/dex/utils/contracts/instances';
 import { useWallet } from '@lib';
+import { devLogger } from '@utils';
 import {
   checkIsApprovalRequired,
   increaseAllowance,
@@ -37,7 +39,7 @@ export function useSwapActions() {
     isMultiHopSwapBetterCurrency
   } = useSwapContextSelector();
 
-  const { settings } = useSwapSettings();
+  const { settings, isAutoApprovalEnabled } = useSwapSettings();
   const { tokensRoute, tokenToSell, tokenToReceive } = useSwapTokens();
   const { isStartsWithETH, isEndsWithETH } = useSwapHelpers();
 
@@ -50,7 +52,6 @@ export function useSwapActions() {
       const bnAmountToSell = ethers.utils.parseEther(amountWithFee);
 
       return checkIsApprovalRequired({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         address: tokenToSell.TOKEN?.address ?? '',
         privateKey,
         amount: bnAmountToSell
@@ -83,6 +84,7 @@ export function useSwapActions() {
           allowance: 'increased'
         });
       }
+      devLogger('🟢 Allowance successfully increased');
     } catch (error) {
       throw error;
     }
@@ -114,6 +116,13 @@ export function useSwapActions() {
 
       const _amountIn = amountIn ?? tokenToSell.AMOUNT;
       const _amountOut = amountOut ?? tokenToReceive.AMOUNT;
+
+      if (
+        isAutoApprovalEnabled &&
+        uiBottomSheetInformation.allowance === AllowanceStatus.INCREASE
+      ) {
+        await setAllowance();
+      }
 
       // Handle ETH wrapping/unwrapping
       if (isETHtoWrapped(tokensRoute)) {
@@ -190,15 +199,18 @@ export function useSwapActions() {
       );
     },
     [
+      isAutoApprovalEnabled,
       isEndsWithETH,
       isExactInRef,
       isMultiHopSwapBetterCurrency.tokens,
       isStartsWithETH,
       privateKey,
+      setAllowance,
       settings,
       tokenToReceive.AMOUNT,
       tokenToSell.AMOUNT,
-      tokensRoute
+      tokensRoute,
+      uiBottomSheetInformation.allowance
     ]
   );
 

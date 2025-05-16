@@ -1,26 +1,14 @@
 import { useCallback } from 'react';
 import { Keyboard } from 'react-native';
-import { bnZERO } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
-import { BottomSheetStatus, FIELD, SelectedTokensKeys } from '@core/dex/types';
+import { FIELD, SelectedTokensKeys } from '@core/dex/types';
 import { useSwapAllBalances } from './use-swap-all-balances';
 
 export function useSwapBottomSheetHandler() {
-  const {
-    bottomSheetTokenARef,
-    bottomSheetTokenBRef,
-    bottomSheetPreviewSwapRef,
-    bottomSheetSwapStatus,
-    setBottomSheetSwapStatus,
-    setEstimatedGasValues
-  } = useSwapContextSelector();
+  const { bottomSheetTokenARef, bottomSheetTokenBRef } =
+    useSwapContextSelector();
 
   const { fetchAllBalances } = useSwapAllBalances();
-
-  const onChangeBottomSheetSwapStatus = useCallback(
-    (status: BottomSheetStatus) => setBottomSheetSwapStatus(status),
-    [setBottomSheetSwapStatus]
-  );
 
   const onShowBottomSheetByKey = useCallback(
     (key: SelectedTokensKeys) => {
@@ -48,22 +36,9 @@ export function useSwapBottomSheetHandler() {
     bottomSheetTokenBRef.current?.dismiss();
   }, [bottomSheetTokenARef, bottomSheetTokenBRef]);
 
-  const onReviewSwapPreview = useCallback(() => {
-    bottomSheetPreviewSwapRef.current?.present();
-  }, [bottomSheetPreviewSwapRef]);
-
-  const onReviewSwapDismiss = useCallback(() => {
-    setEstimatedGasValues({ swap: bnZERO, approval: bnZERO });
-    bottomSheetPreviewSwapRef.current?.dismiss();
-  }, [bottomSheetPreviewSwapRef, setEstimatedGasValues]);
-
   return {
     onDismissBottomSheetByKey,
     onShowBottomSheetByKey,
-    onDismissBottomSheets,
-    onReviewSwapPreview,
-    onReviewSwapDismiss,
-    onChangeBottomSheetSwapStatus,
-    bottomSheetSwapStatus
+    onDismissBottomSheets
   };
 }

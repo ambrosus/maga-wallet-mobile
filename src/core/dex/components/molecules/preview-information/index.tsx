@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { RowContainer, Typography } from '@components/atoms';
-import { COLORS, CryptoCurrencyCode } from '@constants';
+import { COLORS, Config, CryptoCurrencyCode, FONT_SIZE } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
-import { useSwapTokens } from '@core/dex/lib/hooks';
+import { useSwapInterface, useSwapTokens } from '@core/dex/lib/hooks';
 import {
   addresses,
   SwapStringUtils,
@@ -20,37 +20,19 @@ export const PreviewInformation = () => {
   const {
     latestSelectedTokens,
     uiBottomSheetInformation,
-    _refExactGetter,
     isMultiHopSwapBetterCurrency,
     estimatedGasValues
   } = useSwapContextSelector();
 
-  const { tokensRoute, tokenToSell, tokenToReceive } = useSwapTokens();
+  const { priceImpactHighlight, isPriceImpactHigh } = useSwapInterface();
+
+  const { tokensRoute } = useSwapTokens();
 
   const uiPriceImpact = useMemo(() => {
     const { priceImpact } = uiBottomSheetInformation;
 
     return priceImpact != null && priceImpact < 0.01 ? '<0.01' : priceImpact;
   }, [uiBottomSheetInformation]);
-
-  const priceImpactHighlight = useMemo(() => {
-    const { priceImpact } = uiBottomSheetInformation;
-
-    if (priceImpact !== undefined && priceImpact !== null) {
-      if (priceImpact < 0 || priceImpact < 5) return COLORS.success500;
-      if (priceImpact >= 5) return COLORS.destructive500;
-    }
-  }, [uiBottomSheetInformation]);
-
-  const symbol = useMemo(() => {
-    return _refExactGetter
-      ? tokenToReceive.TOKEN?.symbol
-      : tokenToSell.TOKEN?.symbol;
-  }, [
-    _refExactGetter,
-    tokenToReceive.TOKEN?.symbol,
-    tokenToSell.TOKEN?.symbol
-  ]);
 
   const isMultiHopRoute = useMemo(() => {
     return isMultiHopSwapBetterCurrency.tokens.length > 0;
@@ -82,64 +64,70 @@ export const PreviewInformation = () => {
 
   return (
     <View style={styles.container}>
-      {!isWrapOrUnwrapETH && (
-        <>
-          <RowContainer alignItems="center" justifyContent="space-between">
-            <Typography
-              fontSize={15}
-              fontFamily="Onest500Medium"
-              color={COLORS.neutral500}
-            >
-              {t(
-                !_refExactGetter
-                  ? 'swap.bottom.sheet.max.sold'
-                  : 'swap.bottom.sheet.min.received'
-              )}
-            </Typography>
-
-            <RightSideRowItem>
-              {`${uiBottomSheetInformation.minimumReceivedAmount} ${symbol}`}
-            </RightSideRowItem>
-          </RowContainer>
-
-          <RowContainer alignItems="center" justifyContent="space-between">
-            <Typography
-              fontSize={15}
-              fontFamily="Onest500Medium"
-              color={COLORS.neutral500}
-            >
-              {t('swap.bottom.sheet.impact')}
-            </Typography>
-
-            <RightSideRowItem color={priceImpactHighlight}>
-              {uiPriceImpact}%
-            </RightSideRowItem>
-          </RowContainer>
-        </>
-      )}
-
       <RowContainer alignItems="center" justifyContent="space-between">
         <Typography
           fontSize={15}
           fontFamily="Onest500Medium"
           color={COLORS.neutral500}
         >
-          {t('swap.bottom.sheet.lpfee')}
+          {t('common.network')}
+        </Typography>
+
+        <RightSideRowItem>{Config.CHAIN_ID}</RightSideRowItem>
+      </RowContainer>
+
+      <RowContainer alignItems="center" justifyContent="space-between">
+        <Typography
+          fontSize={FONT_SIZE.body.lg}
+          fontFamily="Onest500Medium"
+          color={COLORS.neutral500}
+        >
+          {t('common.network.fee')}
         </Typography>
 
         <RightSideRowItem>
-          {`${estimatedNetworkFee} ${CryptoCurrencyCode.AMB}`}
+          {`${estimatedNetworkFee} ${CryptoCurrencyCode.AMB} ~$1`}
         </RightSideRowItem>
       </RowContainer>
+
+      {!isWrapOrUnwrapETH && (
+        <RowContainer alignItems="center" justifyContent="space-between">
+          <Typography
+            fontSize={FONT_SIZE.body.lg}
+            fontFamily="Onest500Medium"
+            color={COLORS.neutral500}
+          >
+            {t('swap.review.price.impact')}
+          </Typography>
+
+          <RowContainer alignItems="center" gap={4}>
+            <RightSideRowItem color={priceImpactHighlight}>
+              {uiPriceImpact}%
+            </RightSideRowItem>
+
+            {isPriceImpactHigh && (
+              <View style={styles.impactErrorContainer}>
+                <Typography
+                  fontSize={FONT_SIZE.body.sm}
+                  fontFamily="Onest500Medium"
+                  color={COLORS.destructive500}
+                >
+                  {t('swap.review.price.impact.error')}
+                </Typography>
+              </View>
+            )}
+          </RowContainer>
+        </RowContainer>
+      )}
 
       {isMultiHopRoute && (
         <RowContainer alignItems="center" justifyContent="space-between">
           <Typography
-            fontSize={15}
+            fontSize={FONT_SIZE.body.lg}
             fontFamily="Onest500Medium"
             color={COLORS.neutral500}
           >
-            {t('swap.route')}
+            {t('swap.review.route')}
           </Typography>
 
           <RightSideRowItem>
@@ -153,13 +141,15 @@ export const PreviewInformation = () => {
 
 const RightSideRowItem = ({
   children,
-  color = COLORS.neutral800
+  fontSize = FONT_SIZE.body.md,
+  color = COLORS.textPrimary
 }: {
   children: ReactNode;
+  fontSize?: number;
   color?: string;
 }) => {
   return (
-    <Typography fontSize={15} fontFamily="Onest500Medium" color={color}>
+    <Typography fontSize={fontSize} fontFamily="Onest500Medium" color={color}>
       {children}
     </Typography>
   );

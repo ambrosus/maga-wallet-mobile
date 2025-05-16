@@ -1,14 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+  button: {
+    flex: 1,
+    height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 52
-  },
-  innerContainer: {
-    zIndex: 9999
+    borderRadius: 48
   }
 });

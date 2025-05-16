@@ -19,7 +19,8 @@ export const styles = StyleSheet.create({
     fontSize: FONT_SIZE.body.lg,
     fontFamily: FONTS.Onest500Medium,
     color: COLORS.textPrimary,
-    paddingHorizontal: scale(16)
+    paddingHorizontal: scale(16),
+    borderRadius: scale(16)
   },
   label: {
     position: 'absolute',

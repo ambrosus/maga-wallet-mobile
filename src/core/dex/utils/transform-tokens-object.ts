@@ -1,6 +1,5 @@
-// import Config from '@constants/config';
-// import { RodeoToken } from '@entities/amb-rodeo-tokens/types';
 import { Config } from '@constants';
+import { RodeoToken } from '@queries/rodeo-tokens';
 import { SwapToken } from '../types';
 
 export const transformTokensObject = (newTokens: RodeoToken[]): SwapToken[] => {

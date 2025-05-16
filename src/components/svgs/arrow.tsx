@@ -2,7 +2,7 @@ import Svg, { Path } from 'react-native-svg';
 import { ArrowOrientation, ArrowPosition, COLORS } from '@constants';
 import { SvgIconProps } from '@types';
 
-interface ArowProps extends SvgIconProps {
+interface ArrowProps extends SvgIconProps {
   orientation?: ArrowOrientation;
 }
 
@@ -10,7 +10,7 @@ export const Arrow = ({
   scale = 1,
   color = COLORS.black,
   orientation = 'right'
-}: ArowProps) => {
+}: ArrowProps) => {
   const width = 8 * scale;
   const height = 14 * scale;
 

@@ -22,7 +22,9 @@ module.exports = {
           '@types': './src/types',
           '@utils': './src/utils',
           '@lib': './src/lib',
-          '@styles': './src/styles'
+          '@styles': './src/styles',
+          '@queries': './src/queries',
+          '@store': './src/store'
         }
       }
     ],

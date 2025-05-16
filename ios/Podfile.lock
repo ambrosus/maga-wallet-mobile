@@ -65,6 +65,18 @@ PODS:
   - hermes-engine (0.79.1):
     - hermes-engine/Pre-built (= 0.79.1)
   - hermes-engine/Pre-built (0.79.1)
+  - libwebp (1.5.0):
+    - libwebp/demux (= 1.5.0)
+    - libwebp/mux (= 1.5.0)
+    - libwebp/sharpyuv (= 1.5.0)
+    - libwebp/webp (= 1.5.0)
+  - libwebp/demux (1.5.0):
+    - libwebp/webp
+  - libwebp/mux (1.5.0):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.5.0)
+  - libwebp/webp (1.5.0):
+    - libwebp/sharpyuv
   - OpenSSL-Universal (3.3.3001)
   - PromisesObjC (2.4.0)
   - RCT-Folly (2024.11.18.00):
@@ -1901,6 +1913,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNFastImage (8.6.3):
+    - React-Core
+    - SDWebImage (~> 5.11.1)
+    - SDWebImageWebPCoder (~> 0.8.4)
   - RNFBApp (20.1.0):
     - Firebase/CoreOnly (= 10.27.0)
     - React-Core
@@ -2208,6 +2224,12 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - SDWebImage (5.11.1):
+    - SDWebImage/Core (= 5.11.1)
+  - SDWebImage/Core (5.11.1)
+  - SDWebImageWebPCoder (0.8.5):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.10)
   - SocketRocket (0.7.1)
   - Yoga (0.0.0)
 
@@ -2293,6 +2315,7 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -2316,10 +2339,13 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - libwebp
     - OpenSSL-Universal
     - PromisesObjC
     - React-Codegen
     - RecaptchaInterop
+    - SDWebImage
+    - SDWebImageWebPCoder
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -2482,6 +2508,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  RNFastImage:
+    :path: "../node_modules/react-native-fast-image"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
@@ -2522,6 +2550,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   hermes-engine: c32f2e405098bc1ebe30630a051ddce6f21d3c2e
+  libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   OpenSSL-Universal: 6082b0bf950e5636fe0d78def171184e2b3899c2
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 36fe2295e44b10d831836cc0d1daec5f8abcf809
@@ -2597,6 +2626,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: b2d8b5ccba86b5b1e55a1a2e858f7ac6d8a21816
   RNCAsyncStorage: e25fda4679876e5204c4c502d297757ec1f17ced
   RNCClipboard: dfcfff4ab54bba045a73273c00ab60a90940388b
+  RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: 9acbe359ef3559d6f8ca5c350db471f2b352f98a
   RNFBAuth: 58a7a5591755a4f078cfa03e29a60be009a93931
   RNGestureHandler: b249b5be5a3659025aed8898aaaafd567dc2d660
@@ -2606,6 +2636,8 @@ SPEC CHECKSUMS:
   RNReanimated: 7b926938d4190114e5848b5b022d83dbc2c0fe2c
   RNScreens: 4ada1709be95c3a4bf1f885378262ceadd9cc939
   RNSVG: 257f59c952e296c9c36035a8f49b61fda48e398a
+  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
+  SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 0f6757ba6d7d652f42bba3423f925dbf23d51aab
 

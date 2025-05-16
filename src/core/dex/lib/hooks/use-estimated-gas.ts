@@ -8,6 +8,7 @@ import {
 } from '@core/dex/utils';
 import { useNativeCurrency, useWallet } from '@lib';
 import { createAMBProvider } from '@lib/crypto';
+import { devLogger } from '@utils';
 import { useSwapActions } from './use-swap-actions';
 import { checkIsApprovalRequired, increaseAllowance } from '../contracts';
 import { useSwapTokens } from './use-swap-tokens';
@@ -29,6 +30,9 @@ export function useEstimatedGas() {
       const provider = createAMBProvider();
       try {
         const { gasPrice } = await provider.getFeeData();
+        devLogger(
+          `🟢 Gas price ${ethers.utils.formatEther(gasPrice ?? bnZERO)}`
+        );
 
         const gasWithMargin = calculateGasMargin(estimatedGas);
 
@@ -38,9 +42,13 @@ export function useEstimatedGas() {
         const totalWei = Math.floor(
           estimatedGasNumber * gasPriceNumber
         ).toString();
+
+        devLogger(
+          `🟢 Total gas ${ethers.utils.formatEther(totalWei ?? bnZERO)}`
+        );
         return ethers.utils.parseUnits(totalWei, 'wei');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        console.error('Error in baseProviderFee', error);
         return bnZERO;
       }
     },

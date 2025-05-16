@@ -5,13 +5,13 @@ import { FLEX_FULL_SIZE, isIos } from '@constants';
 import { SwapReverseTokens } from '@core/dex/components/molecules';
 import {
   InputWithTokenSelect,
-  SwapCurrencyRate,
+  SwapTradeDetails,
   ReviewSwapButton
 } from '@core/dex/components/organisms';
 import { useSwapContextSelector } from '@core/dex/context';
 import { useSwapInterface, useSwapTokens } from '@core/dex/lib/hooks';
 import { FIELD } from '@core/dex/types';
-import { plateVisibility } from '@core/dex/utils';
+import { tradeDetailsVisibility } from '@core/dex/utils';
 import { scale } from '@utils';
 import { styles } from './styles';
 
@@ -38,8 +38,8 @@ export const SwapForm = () => {
     [selectedTokens.TOKEN_B, selectedTokensAmount.TOKEN_B]
   );
 
-  const isCurrencyRateVisible = useMemo(() => {
-    return plateVisibility(
+  const isSwapTradeDetailsVisible = useMemo(() => {
+    return tradeDetailsVisibility(
       tokenToSell.TOKEN,
       tokenToSell.AMOUNT,
       tokenToReceive.TOKEN,
@@ -77,10 +77,10 @@ export const SwapForm = () => {
               />
             </View>
 
-            <Spacer value={scale(32)} />
+            <Spacer value={scale(24)} />
 
-            {isCurrencyRateVisible && (
-              <SwapCurrencyRate
+            {isSwapTradeDetailsVisible && (
+              <SwapTradeDetails
                 tokenToSell={tokenToSell.TOKEN.address}
                 tokenToReceive={tokenToReceive.TOKEN.address}
                 tokensRoute={tokensRoute}

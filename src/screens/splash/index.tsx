@@ -5,6 +5,7 @@ import { styles } from './styles';
 
 export const SplashScreen = () => {
   useSplashNavigation();
+
   return (
     <SafeAreaView style={styles.container}>
       <AppIcon testID="splash_icon" />

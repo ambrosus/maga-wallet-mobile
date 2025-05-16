@@ -18,7 +18,9 @@ import {
   AirBondIcon
 } from '@components/svgs/tokens';
 import { CryptoCurrencyCode } from '@constants';
-import { getTokenNameFromDatabase } from '@utils';
+import { useRodeoSingleTokenQuery } from '@lib/hooks/queries';
+import { fromHexlifyToObject, getTokenNameFromDatabase } from '@utils';
+import { TokenImageIpfsWithShimmer } from '../token-ipfs-image-with-shimmer';
 
 interface TokenLogoProps {
   token?: string;
@@ -42,7 +44,7 @@ export const TokenLogo = ({
     else return token;
   }, [address, token]);
 
-  // const { data, loading } = useRodeoSingleTokenQuery(tokenName);
+  const { data, loading } = useRodeoSingleTokenQuery(tokenName);
 
   switch (toLower(tokenName)) {
     case CryptoCurrencyCode.AMB.toLowerCase():
@@ -105,25 +107,26 @@ export const TokenLogo = ({
     case 'airbond':
       return <AirBondIcon scale={scale} />;
     default: {
-      // if (loading) {
-      //   return <TokenImageIpfsWithShimmer src="" loading />;
-      // }
+      if (loading) {
+        return <TokenImageIpfsWithShimmer src="" loading />;
+      }
 
-      // if (data && data.token) {
-      //   const {
-      //     token: { data: tokenEncodedData }
-      //   } = data;
-      //   const decodedTokenData = data.token
-      //     ? fromHexlifyToObject<{ image?: string }>(tokenEncodedData)
-      //     : null;
+      if (data && data.token) {
+        const {
+          token: { data: tokenEncodedData }
+        } = data;
 
-      //   return (
-      //     <TokenImageIpfsWithShimmer
-      //       src={decodedTokenData?.image ?? ''}
-      //       scale={scale}
-      //     />
-      //   );
-      // }
+        const decodedTokenData = data.token
+          ? fromHexlifyToObject<{ image?: string }>(tokenEncodedData)
+          : null;
+
+        return (
+          <TokenImageIpfsWithShimmer
+            src={decodedTokenData?.image ?? ''}
+            scale={scale}
+          />
+        );
+      }
 
       return <UnknownTokenIcon scale={scale} />;
     }

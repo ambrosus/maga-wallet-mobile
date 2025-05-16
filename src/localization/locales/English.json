@@ -6,10 +6,14 @@
     "enter.amount": "Enter amount",
     "insufficient": "Insufficient balance",
     "next": "Next",
-    "copy": "Copy"
+    "copy": "Copy",
+    "approve": "Approve {{symbol}}",
+    "confirm": "Confirm"
   },
   "common": {
-    "balance": "Balance"
+    "balance": "Balance",
+    "network.fee": "Network Fee",
+    "network": "Network"
   },
   "setupPasskey": {
     "title": "Setup Passkey",
@@ -87,10 +91,24 @@
       "title": "Swap Settings",
       "toast.success": "Preferences saved.",
       "slippage.errors": {
-        "high": "High slippage. Transaction may experience price impact.",
-        "low": "Low slippage. Transaction may fail.",
-        "invalid": "Invalid input. Enter a value between 0.1% and 50%."
+        "high": "Your transaction may frontrun.",
+        "low": "Your transaction may fail.",
+        "invalid": "Enter a valid slippage percentage."
       }
+    },
+    "buttons": {
+      "processSwap": "Swap",
+      "processSwap.anyway": "Swap Anyway",
+      "processSwap.impact.high": "Price impact too high",
+      "processSwap.loading": "Swapping"
+    },
+    "review": {
+      "maximum.sold": "Maximum Sold",
+      "minimum.received": "Minimum Received",
+      "price.impact": "Price Impact",
+      "route": "Route",
+      "price.impact.error": "Too High",
+      "rate": "Rate"
     }
   }
 }

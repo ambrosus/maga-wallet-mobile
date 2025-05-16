@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSwapContextSelector } from '@core/dex/context';
 import { Settings, SettingsKeys } from '@core/dex/types';
 import { StringUtils, NumberUtils } from '@utils';
@@ -54,11 +54,17 @@ export function useSwapSettings() {
     [onChangeDeadlineHandle, onChangeSlippageToleranceHandle]
   );
 
+  const isAutoApprovalEnabled = useMemo(
+    () => _refSettingsGetter.autoApproval,
+    [_refSettingsGetter.autoApproval]
+  );
+
   return {
     localSettingsState,
     onChangeSettings,
     onApplySettingsHandle,
     settings,
-    _refSettingsGetter
+    _refSettingsGetter,
+    isAutoApprovalEnabled
   };
 }

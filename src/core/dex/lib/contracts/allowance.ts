@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { Config } from '@constants';
 import { AllowanceArgs } from '@core/dex/types';
 import { createSigner } from '@core/dex/utils/contracts/instances';
+import { devLogger } from '@utils';
 import { ALLOWANCE } from '../abi';
 
 export async function checkIsApprovalRequired({
@@ -25,6 +26,11 @@ export async function checkIsApprovalRequired({
         Config.ROUTER_V2_ADDRESS
       );
 
+      devLogger(
+        `🟢 Allowance might be insufficient for the swap: ${allowance.lt(
+          amount
+        )}`
+      );
       return allowance.lt(amount);
     }
   } catch (error) {

@@ -1,4 +1,10 @@
-import { TextInput, TextInputProps, View } from 'react-native';
+import {
+  StyleProp,
+  TextInput,
+  TextInputProps,
+  TextStyle,
+  View
+} from 'react-native';
 import { Spacer, Typography } from '@components/atoms';
 import { COLORS, FONT_SIZE } from '@constants';
 import { verticalScale } from '@utils';
@@ -9,12 +15,14 @@ interface SettingsInputWithLabelProps
   heading: string;
   label: string;
   placeholder?: string;
+  inputStyle?: StyleProp<TextStyle>;
 }
 
 export const SettingsInputWithLabel = ({
   heading,
   label,
   placeholder,
+  inputStyle,
   ...restProps
 }: SettingsInputWithLabelProps) => {
   return (
@@ -32,7 +40,7 @@ export const SettingsInputWithLabel = ({
       <View style={styles.container}>
         <TextInput
           maxLength={24}
-          style={styles.input}
+          style={[styles.input, inputStyle]}
           keyboardType="numeric"
           placeholder={placeholder}
           placeholderTextColor={COLORS.textSecondary}

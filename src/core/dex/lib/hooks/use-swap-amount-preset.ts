@@ -18,6 +18,8 @@ type PresetCallbackArgs = {
   value: (typeof BASE_PERCENTS_PRESET)[number];
 };
 
+const MAX_PRESET_VALUE = 100;
+
 export const useSwapAmountPreset = () => {
   const {
     selectedTokens,
@@ -43,10 +45,13 @@ export const useSwapAmountPreset = () => {
         setTimeout(async () => {
           const parsedBalance = ethers.utils.formatEther(bnBalanceAmount);
 
-          const amountWithPercentApplied = NumberUtils.limitDecimalCount(
-            (Number(parsedBalance) * Number(value)) / 100,
-            ETH_DECIMALS
-          );
+          const amountWithPercentApplied =
+            value === MAX_PRESET_VALUE
+              ? parsedBalance
+              : NumberUtils.limitDecimalCount(
+                  (Number(parsedBalance) * Number(value)) / 100,
+                  ETH_DECIMALS
+                );
 
           const bnAmountToSpend = ethers.utils.parseEther(
             amountWithPercentApplied

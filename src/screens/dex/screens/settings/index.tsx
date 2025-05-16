@@ -9,7 +9,7 @@ import {
 import { Button, Header, Toast, ToastType } from '@components/molecules';
 import { COLORS, FONT_SIZE } from '@constants';
 import { SettingsForm } from '@core/dex/components/templates';
-import { useSwapSettings } from '@core/dex/lib/hooks';
+import { useSwapFieldsHandler, useSwapSettings } from '@core/dex/lib/hooks';
 import { HomeTabParamsList } from '@navigation';
 import { NavigationScreenProps } from '@navigation/types';
 import { styles } from './styles';
@@ -19,12 +19,21 @@ type Props = NavigationScreenProps<HomeTabParamsList, 'DexSettingsScreen'>;
 export const DexSettingsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
 
+  const { updateReceivedTokensOutput } = useSwapFieldsHandler();
+
   const { localSettingsState, onChangeSettings, onApplySettingsHandle } =
     useSwapSettings();
 
   const renderHeaderRightContent = useMemo(() => {
-    const onSaveActionHandle = () => {
+    const onSaveActionHandle = async () => {
       onApplySettingsHandle();
+
+      setTimeout(async () => {
+        await updateReceivedTokensOutput({
+          multihops: localSettingsState.multihops
+        });
+      }, 500);
+
       Toast.show({
         text: t('swap.settings.toast.success'),
         type: ToastType.Success
@@ -43,7 +52,13 @@ export const DexSettingsScreen = ({ navigation }: Props) => {
         </Typography>
       </Button>
     );
-  }, [navigation, onApplySettingsHandle, t]);
+  }, [
+    localSettingsState.multihops,
+    navigation,
+    onApplySettingsHandle,
+    t,
+    updateReceivedTokensOutput
+  ]);
 
   return (
     <SafeViewContainer style={styles.container}>

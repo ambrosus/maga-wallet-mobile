@@ -5,12 +5,13 @@ import { toLower } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { Spacer } from '@components/atoms';
 import { BottomSheet } from '@components/organisms';
-import { bnZERO, Config, DEVICE_HEIGHT } from '@constants';
+import { bnZERO, DEVICE_HEIGHT } from '@constants';
 import { BottomSheetTokenItem } from '@core/dex/components/organisms';
 import { useSwapAllBalances } from '@core/dex/lib/hooks';
 import { SelectedTokensKeys, SwapToken } from '@core/dex/types';
-// import { transformTokensObject } from '@core/dex/utils';
+import { transformTokensObject } from '@core/dex/utils';
 import { useForwardedRef, useSafeViewController } from '@lib';
+import { useRodeoTokensListQuery } from '@lib/hooks/queries';
 import { scale } from '@utils';
 
 interface BottomSheetTokensListProps {
@@ -25,7 +26,7 @@ export const BottomSheetTokensList = forwardRef<
   const bottomSheetRef = useForwardedRef(ref);
   const { balances } = useSwapAllBalances();
 
-  // const { tokens } = useRodeoTokensListQuery();
+  const { tokens } = useRodeoTokensListQuery();
 
   const label = t(`swap.bottom.sheet.select.${toLower(type)}`);
 
@@ -60,7 +61,7 @@ export const BottomSheetTokensList = forwardRef<
 
       <BottomSheetFlatList
         maxToRenderPerBatch={4}
-        data={Config.SWAP_TOKENS}
+        data={transformTokensObject(tokens)}
         showsVerticalScrollIndicator={false}
         style={{
           marginBottom: Platform.select({

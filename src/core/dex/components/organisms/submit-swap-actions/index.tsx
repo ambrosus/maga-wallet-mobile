@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Spacer } from '@components/atoms';
 import { bnZERO } from '@constants';
 import {
   ApprovalRequiredButton,
@@ -10,15 +12,18 @@ import { useSwapContextSelector } from '@core/dex/context';
 import {
   useEstimatedGas,
   useSwapActions,
-  useSwapBottomSheetHandler
+  useSwapSettings
 } from '@core/dex/lib/hooks';
-import { AllowanceStatus, BottomSheetStatus } from '@core/dex/types';
+import { AllowanceStatus } from '@core/dex/types';
+import { HOME_STACK_ROUTES, HomeNavigationProp } from '@navigation';
+import { ApprovalBadge } from '../../atoms';
 
 const SWAP_ERROR_TITLE = 'The transaction cannot succeed due to error:';
 const SWAP_ERROR_DESCRIPTION =
   'missing revert data in call exception; Transaction reverted without a reason string. This is probably an issue with one of the tokens you are swapping.';
 
 export const SubmitSwapActions = () => {
+  const navigation = useNavigation<HomeNavigationProp>();
   const {
     uiBottomSheetInformation: { priceImpact, allowance },
     setIsProcessingSwap,
@@ -30,11 +35,11 @@ export const SubmitSwapActions = () => {
   } = useSwapContextSelector();
 
   const { setAllowance, swapCallback } = useSwapActions();
-  const { onChangeBottomSheetSwapStatus } = useSwapBottomSheetHandler();
   const { estimatedSwapGas, isEnoughBalanceToCoverGas } = useEstimatedGas();
+  const { isAutoApprovalEnabled } = useSwapSettings();
 
   const onCompleteMultiStepSwap = useCallback(async () => {
-    if (allowance === AllowanceStatus.INCREASE) {
+    if (!isAutoApprovalEnabled && allowance === AllowanceStatus.INCREASE) {
       try {
         setIsIncreasingAllowance(true);
         await setAllowance();
@@ -56,16 +61,17 @@ export const SubmitSwapActions = () => {
         const tx = await swapCallback({ estimateGas: false });
 
         if (!tx) {
-          onChangeBottomSheetSwapStatus(BottomSheetStatus.ERROR);
+          // onChangeBottomSheetSwapStatus(BottomSheetStatus.ERROR);
           // sendFirebaseEvent(CustomAppEvents.swap_error, {
           //   swapError: 'swapTokens-tx not found'
           // });
         } else {
+          navigation.replace(HOME_STACK_ROUTES.DexSuccessScreen);
           // sendFirebaseEvent(CustomAppEvents.swap_finish);
-          onChangeBottomSheetSwapStatus(BottomSheetStatus.SUCCESS);
+          // onChangeBottomSheetSwapStatus(BottomSheetStatus.SUCCESS);
         }
       } catch (error) {
-        onChangeBottomSheetSwapStatus(BottomSheetStatus.ERROR);
+        // onChangeBottomSheetSwapStatus(BottomSheetStatus.ERROR);
         // sendFirebaseEvent(CustomAppEvents.swap_error, {
         //   swapError: JSON.stringify(
         //     (error as { message: string })?.message ?? JSON.stringify(error)
@@ -80,8 +86,9 @@ export const SubmitSwapActions = () => {
   }, [
     allowance,
     estimatedSwapGas,
+    isAutoApprovalEnabled,
     isEnoughBalanceToCoverGas,
-    onChangeBottomSheetSwapStatus,
+    navigation,
     setAllowance,
     setEstimatedGasValues,
     setIsIncreasingAllowance,
@@ -94,7 +101,7 @@ export const SubmitSwapActions = () => {
   }, [allowance, isInsufficientBalance]);
 
   // UI Button Elements
-  if (!hasApprovalRequired && priceImpact && priceImpact > 5) {
+  if (isAutoApprovalEnabled && priceImpact && priceImpact > 5) {
     return (
       <SwapErrorImpactButton
         isProcessingSwap={isProcessingSwap}
@@ -103,22 +110,24 @@ export const SubmitSwapActions = () => {
     );
   }
 
-  if (hasApprovalRequired) {
+  if (hasApprovalRequired && !isAutoApprovalEnabled) {
     return (
-      <ApprovalRequiredButton
-        isProcessingSwap={isProcessingSwap}
-        isIncreasingAllowance={isIncreasingAllowance}
-        onCompleteMultiStepSwap={onCompleteMultiStepSwap}
-      />
+      <>
+        <ApprovalBadge />
+        <Spacer value={16} />
+        <ApprovalRequiredButton
+          isProcessingSwap={isProcessingSwap}
+          isIncreasingAllowance={isIncreasingAllowance}
+          onCompleteMultiStepSwap={onCompleteMultiStepSwap}
+        />
+      </>
     );
   }
 
-  if (isInsufficientBalance || allowance === AllowanceStatus.SUITABLE) {
-    return (
-      <SwapButton
-        isProcessingSwap={isProcessingSwap}
-        onCompleteMultiStepSwap={onCompleteMultiStepSwap}
-      />
-    );
-  }
+  return (
+    <SwapButton
+      isProcessingSwap={isProcessingSwap}
+      onCompleteMultiStepSwap={onCompleteMultiStepSwap}
+    />
+  );
 };

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { RowContainer, Spacer, Typography } from '@components/atoms';
 import { TokenLogo } from '@components/molecules';
 import { ArrowBottomFilledIcon } from '@components/svgs';
-import { COLORS } from '@constants';
+import { COLORS, FONT_SIZE } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
 import { useSwapBottomSheetHandler } from '@core/dex/lib/hooks';
 import { SelectedTokensKeys } from '@core/dex/types';
@@ -51,7 +51,7 @@ export const TokenSelector = ({ type }: TokenSelectorProps) => {
             </>
           )}
           <Typography
-            fontSize={20}
+            fontSize={FONT_SIZE.body.lg}
             fontFamily="Onest600SemiBold"
             color={COLORS.neutral800}
           >

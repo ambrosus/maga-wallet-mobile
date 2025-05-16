@@ -5,6 +5,7 @@ import {
   SettingsToggleContainer
 } from '@core/dex/components/molecules';
 import { SettingsSlippageForm } from '@core/dex/components/organisms';
+import { useSwapFieldsHandler } from '@core/dex/lib/hooks';
 import { Settings, SettingsKeys } from '@core/dex/types';
 import { styles } from './styles';
 
@@ -17,6 +18,8 @@ export const SettingsForm = ({
   settings,
   onChangeSettings
 }: SettingsFormProps) => {
+  const { updateReceivedTokensOutput } = useSwapFieldsHandler();
+
   const { slippageTolerance, deadline, extendedMode, multihops, autoApproval } =
     useMemo(() => settings, [settings]);
 
@@ -25,15 +28,17 @@ export const SettingsForm = ({
     [onChangeSettings]
   );
 
-  const onToggleExtendedMode = useCallback(
-    () => onChangeSettings('extendedMode', !extendedMode),
-    [extendedMode, onChangeSettings]
-  );
+  const onToggleExtendedMode = useCallback(() => {
+    onChangeSettings('extendedMode', !extendedMode);
+  }, [extendedMode, onChangeSettings]);
 
-  const onToggleMultihops = useCallback(
-    () => onChangeSettings('multihops', !multihops),
-    [multihops, onChangeSettings]
-  );
+  const onToggleMultihops = useCallback(() => {
+    onChangeSettings('multihops', !multihops);
+
+    setTimeout(async () => {
+      await updateReceivedTokensOutput();
+    });
+  }, [multihops, onChangeSettings, updateReceivedTokensOutput]);
 
   const onToggleAutoApproval = useCallback(
     () => onChangeSettings('autoApproval', !autoApproval),

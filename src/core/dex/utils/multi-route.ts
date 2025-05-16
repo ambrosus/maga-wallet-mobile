@@ -1,7 +1,4 @@
-// TODO: Add tokens from Rodeo
-// import { useRodeoTokensStore } from '@entities/amb-rodeo-tokens/model';
 import { Config } from '@constants';
-// import { transformTokensObject } from './transform-tokens-object';
 import { addresses } from './wrap-native-address';
 
 export const MAX_HOPS = 3;
@@ -34,14 +31,12 @@ export const generateAllPossibleRoutes = (
   path: string[],
   maxHops = MAX_HOPS
 ): string[][] => {
-  // const { tokens: ambRodeoTokens } = useRodeoTokensStore.getState();
   const [startToken, endToken] = path;
   if (!startToken || !endToken) return [];
 
   // Check if path includes addresses.SAMB
   const includesSAMB = path.includes(addresses.SAMB);
 
-  // const availableTokens = transformTokensObject(ambRodeoTokens)
   const availableTokens = Config.SWAP_TOKENS.filter(
     (token) =>
       !ignoreTokenAddresses.includes(token.address) &&

@@ -1,6 +1,6 @@
 import { SwapToken } from '../types';
 
-export function plateVisibility(
+export function tradeDetailsVisibility(
   TOKEN_A: SwapToken | null,
   AMOUNT_A: string,
   TOKEN_B: SwapToken | null,

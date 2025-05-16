@@ -1,2 +1,3 @@
 export { Divider } from './divider';
-export { BottomSheetReviewTokenItem } from './bottom-sheet-review-token-item';
+export { SwapReviewTokenItem } from './swap-review-token-item';
+export { ApprovalBadge } from './approval-badge';

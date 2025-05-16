@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
-import { ViewStyle, StyleProp } from 'react-native';
+import { ViewStyle, StyleProp, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Spinner, Typography } from '@components/atoms';
-import { PrimaryButton } from '@components/molecules';
 import { COLORS } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
 import { useSwapSettings } from '@core/dex/lib/hooks';
 import { AllowanceStatus } from '@core/dex/types';
+import { styles } from './styles';
+import { PriceImpactErrorColors } from '../utils/colors';
 
 interface SwapErrorImpactButtonProps {
   isProcessingSwap: boolean;
@@ -26,7 +27,8 @@ export const SwapErrorImpactButton = ({
   const {
     settings: {
       current: { extendedMode }
-    }
+    },
+    isAutoApprovalEnabled
   } = useSwapSettings();
 
   const { isInsufficientBalance } = useSwapContextSelector();
@@ -38,9 +40,8 @@ export const SwapErrorImpactButton = ({
   const disabled = useMemo(() => {
     if (priceImpact) {
       return (
-        allowance === AllowanceStatus.INCREASE ||
+        (!isAutoApprovalEnabled && allowance === AllowanceStatus.INCREASE) ||
         (priceImpact > 10 && !extendedMode) ||
-        isInsufficientBalance ||
         isProcessingSwap
       );
     }
@@ -49,45 +50,46 @@ export const SwapErrorImpactButton = ({
   }, [
     allowance,
     extendedMode,
-    isInsufficientBalance,
+    isAutoApprovalEnabled,
     isProcessingSwap,
     priceImpact
   ]);
 
   const buttonActionString = useMemo(() => {
     if (minimized) {
-      return t('swap.button.swap.anyway');
+      return t('swap.buttons.processSwap.anyway');
     }
 
     if (isInsufficientBalance) {
-      return t('bridge.insufficient.funds');
+      return t('buttons.insufficient');
     }
 
     if (priceImpact) {
       if (priceImpact > 10 && !extendedMode) {
-        return t('swap.button.impact.high');
+        return t('swap.buttons.processSwap.impact.high');
       } else {
-        return t('swap.button.swap.anyway');
+        return t('swap.buttons.processSwap.anyway');
       }
     }
   }, [minimized, isInsufficientBalance, priceImpact, t, extendedMode]);
 
-  // const buttonColors = useMemo(() => {
-  //   if (priceImpact && priceImpact >= 5 && priceImpact < 10) {
-  //     return PriceImpactErrorColors.expert;
-  //   }
+  const buttonColors = useMemo(() => {
+    if (priceImpact && priceImpact >= 5 && priceImpact < 10) {
+      return PriceImpactErrorColors.expert;
+    }
 
-  //   return PriceImpactErrorColors[
-  //     !extendedMode || allowance === AllowanceStatus.INCREASE
-  //       ? 'default'
-  //       : ('expert' as keyof typeof PriceImpactErrorColors)
-  //   ];
-  // }, [allowance, extendedMode, priceImpact]);
+    return PriceImpactErrorColors[
+      !extendedMode ||
+      (!isAutoApprovalEnabled && allowance === AllowanceStatus.INCREASE)
+        ? 'default'
+        : ('expert' as keyof typeof PriceImpactErrorColors)
+    ];
+  }, [allowance, extendedMode, isAutoApprovalEnabled, priceImpact]);
 
   return (
-    <PrimaryButton
+    <TouchableOpacity
       disabled={disabled}
-      style={buttonStyle}
+      style={[styles.button, buttonStyle, { backgroundColor: buttonColors }]}
       onPress={onCompleteMultiStepSwap}
     >
       {isProcessingSwap ? (
@@ -101,6 +103,6 @@ export const SwapErrorImpactButton = ({
           {buttonActionString}
         </Typography>
       )}
-    </PrimaryButton>
+    </TouchableOpacity>
   );
 };

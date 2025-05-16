@@ -166,14 +166,22 @@ export const InputWithTokenSelect = ({
       ]}
     >
       <RowContainer alignItems="center" justifyContent="space-between">
-        <Typography
-          fontSize={14}
-          fontFamily="Onest500Medium"
-          color={COLORS.neutral800}
-        >
-          {label} {estimated && `(${t('swap.label.estimated')})`}
-        </Typography>
-
+        <RowContainer alignItems="center" gap={4}>
+          <Typography
+            fontSize={14}
+            fontFamily="Onest500Medium"
+            color={COLORS.neutral800}
+          >
+            {label}
+          </Typography>
+          <Typography
+            fontSize={14}
+            fontFamily="Onest500Medium"
+            color={COLORS.textSecondary}
+          >
+            {estimated && `(${t('swap.label.estimated')})`}
+          </Typography>
+        </RowContainer>
         <Balance
           type={type}
           bnBalanceAmount={bnBalanceAmount}

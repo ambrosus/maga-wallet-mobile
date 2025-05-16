@@ -1,11 +1,10 @@
 import { useCallback, useRef } from 'react';
 import { ethers } from 'ethers';
-// import { useRodeoTokensListQuery } from '@entities/amb-rodeo-tokens/lib';
-// import { useWalletStore } from '@entities/wallet';
 import { Config } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
-import { initialBalances } from '@core/dex/utils';
+import { initialBalances, transformTokensObject } from '@core/dex/utils';
 import { useWallet } from '@lib';
+import { useRodeoTokensListQuery } from '@lib/hooks/queries';
 import { batchFetchTokenBalances } from '../contracts';
 
 export function useSwapAllBalances() {
@@ -13,7 +12,7 @@ export function useSwapAllBalances() {
   const { balances, setBalances, setBalancesLoading } =
     useSwapContextSelector();
 
-  // const { tokens } = useRodeoTokensListQuery();
+  const { tokens } = useRodeoTokensListQuery();
   const fetchInProgress = useRef(false);
 
   const fetchAllBalances = useCallback(async () => {
@@ -29,11 +28,12 @@ export function useSwapAllBalances() {
       // Split tokens into priority tokens (common tokens) and other tokens
       // This ensures users see their most important balances first
       const commonTokenSymbols = ['AMB', 'SAMB', 'USDT', 'USDC'];
-      // TODO: Add tokens from Rodeo
-      // const allTokens = transformTokensObject(tokens);
-      const priorityTokens = Config.SWAP_TOKENS.filter((token) =>
+
+      const allTokens = transformTokensObject(tokens);
+      const priorityTokens = allTokens.filter((token) =>
         commonTokenSymbols.includes(token.symbol)
       );
+
       const otherTokens = Config.SWAP_TOKENS.filter(
         (token) => !commonTokenSymbols.includes(token.symbol)
       );
@@ -75,7 +75,7 @@ export function useSwapAllBalances() {
       setBalancesLoading(false);
       fetchInProgress.current = false;
     }
-  }, [balances, setBalances, setBalancesLoading, wallet.address]);
+  }, [balances, setBalances, setBalancesLoading, tokens, wallet.address]);
 
   return { balances, fetchAllBalances };
 }

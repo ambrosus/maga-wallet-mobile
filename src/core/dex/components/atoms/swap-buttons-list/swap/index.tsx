@@ -36,10 +36,10 @@ export const SwapButton = ({
     }
 
     if (isInsufficientBalance) {
-      return t('bridge.insufficient.funds');
+      return t('buttons.insufficient');
     }
 
-    return t('button.confirm');
+    return t('buttons.confirm');
   }, [isInsufficientBalance, selectedTokens, t]);
 
   return (
@@ -56,7 +56,7 @@ export const SwapButton = ({
             fontFamily="Onest600SemiBold"
             color={COLORS.primary500}
           >
-            {t('button.swapping')}
+            {t('swap.buttons.processSwap.loading')}
           </Typography>
         </RowContainer>
       ) : (

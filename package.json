@@ -13,6 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@gorhom/bottom-sheet": "^5",
     "@invertase/react-native-apple-authentication": "^2.4.1",
     "@react-native-async-storage/async-storage": "^2.1.2",
@@ -34,7 +35,8 @@
     "crypto-browserify": "^3.12.1",
     "crypto-js": "^4.2.0",
     "empty-module": "^0.0.2",
-    "ethers": "5.7.2",
+    "ethers": "^5.7.2",
+    "graphql": "^16.11.0",
     "i18next": "^25.0.1",
     "i18next-react": "^0.2.2",
     "lint-staged": "^15.5.1",
@@ -49,6 +51,7 @@
     "react-native": "0.79.1",
     "react-native-biometrics": "^3.0.1",
     "react-native-dotenv": "^3.4.11",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.25.0",
     "react-native-get-random-values": "^1.11.0",
     "react-native-inappbrowser-reborn": "^3.7.0",

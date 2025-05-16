@@ -19,57 +19,61 @@ export function useSwapFieldsHandler() {
   const { bestTradeCurrency } = useSwapBetterCurrency();
   const { isEmptyAmount } = useSwapHelpers();
 
-  const updateReceivedTokensOutput = useCallback(async () => {
-    setIsExecutingPrice(true);
-    const isExactIn = isExactInRef.current;
-    const oppositeKey = isExactIn ? FIELD.TOKEN_B : FIELD.TOKEN_A;
-    const { TOKEN_A, TOKEN_B } = latestSelectedTokens.current;
-    const { TOKEN_A: AMOUNT_A, TOKEN_B: AMOUNT_B } =
-      latestSelectedTokensAmount.current;
+  const updateReceivedTokensOutput = useCallback(
+    async ({ multihops }: { multihops?: boolean } = {}) => {
+      setIsExecutingPrice(true);
+      const isExactIn = isExactInRef.current;
+      const oppositeKey = isExactIn ? FIELD.TOKEN_B : FIELD.TOKEN_A;
+      const { TOKEN_A, TOKEN_B } = latestSelectedTokens.current;
+      const { TOKEN_A: AMOUNT_A, TOKEN_B: AMOUNT_B } =
+        latestSelectedTokensAmount.current;
 
-    if (!TOKEN_A || !TOKEN_B) return;
+      if (!TOKEN_A || !TOKEN_B) return;
 
-    const path = [TOKEN_A?.address, TOKEN_B.address];
-    const amountToSell = isExactIn ? AMOUNT_A : AMOUNT_B;
+      const path = [TOKEN_A?.address, TOKEN_B.address];
+      const amountToSell = isExactIn ? AMOUNT_A : AMOUNT_B;
 
-    if (isEmptyAmount(amountToSell)) return setIsExecutingPrice(false);
+      if (isEmptyAmount(amountToSell)) return setIsExecutingPrice(false);
 
-    try {
-      const bnAmountToReceive = await bestTradeCurrency(amountToSell, path, {
-        changeUiHopArray: true
-      });
+      try {
+        const bnAmountToReceive = await bestTradeCurrency(amountToSell, path, {
+          changeUiHopArray: true,
+          argsMultihops: multihops
+        });
 
-      const normalizedAmount = formatEther(bnAmountToReceive?._hex);
+        const normalizedAmount = formatEther(bnAmountToReceive?._hex);
 
-      setSelectedTokensAmount((prevSelectedTokensAmounts) => {
-        const currentAmount =
-          prevSelectedTokensAmounts[
-            isExactInRef.current ? FIELD.TOKEN_A : FIELD.TOKEN_B
-          ];
-        if (!isEmptyAmount(currentAmount)) {
-          return {
-            ...latestSelectedTokensAmount.current,
-            [oppositeKey]: isEmptyAmount(normalizedAmount)
-              ? ''
-              : normalizedAmount
-          };
-        }
-        return prevSelectedTokensAmounts;
-      });
-    } catch (error) {
-      throw error;
-    } finally {
-      setIsExecutingPrice(false);
-    }
-  }, [
-    setIsExecutingPrice,
-    isExactInRef,
-    latestSelectedTokens,
-    latestSelectedTokensAmount,
-    isEmptyAmount,
-    bestTradeCurrency,
-    setSelectedTokensAmount
-  ]);
+        setSelectedTokensAmount((prevSelectedTokensAmounts) => {
+          const currentAmount =
+            prevSelectedTokensAmounts[
+              isExactInRef.current ? FIELD.TOKEN_A : FIELD.TOKEN_B
+            ];
+          if (!isEmptyAmount(currentAmount)) {
+            return {
+              ...latestSelectedTokensAmount.current,
+              [oppositeKey]: isEmptyAmount(normalizedAmount)
+                ? ''
+                : normalizedAmount
+            };
+          }
+          return prevSelectedTokensAmounts;
+        });
+      } catch (error) {
+        throw error;
+      } finally {
+        setIsExecutingPrice(false);
+      }
+    },
+    [
+      setIsExecutingPrice,
+      isExactInRef,
+      latestSelectedTokens,
+      latestSelectedTokensAmount,
+      isEmptyAmount,
+      bestTradeCurrency,
+      setSelectedTokensAmount
+    ]
+  );
 
   const debouncedUpdateReceivedTokensOutput = useMemo(
     () => debounce(async () => await updateReceivedTokensOutput(), 100),

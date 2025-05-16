@@ -1,5 +1,6 @@
 import { Children, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   PercentPressableContainer,
   RowContainer,
@@ -23,6 +24,8 @@ export const SettingsSlippageForm = ({
   slippageTolerance,
   setSlippageTolerance
 }: SettingsSlippageFormProps) => {
+  const { t } = useTranslation();
+
   const onChangeSlippageToleranceHandle = useCallback(
     (value: string) => {
       setSlippageTolerance('slippageTolerance', value);
@@ -56,6 +59,20 @@ export const SettingsSlippageForm = ({
     [slippageTolerance]
   );
 
+  const slippageDescriptionHighlight = useMemo(() => {
+    if (!error) return COLORS.textSecondary;
+
+    if (error === t('swap.settings.slippage.errors.invalid'))
+      return COLORS.destructive500;
+
+    return COLORS.warning500;
+  }, [error, t]);
+
+  const inputBorderStyle = useMemo(() => {
+    if (error) return { borderColor: slippageDescriptionHighlight };
+    return { borderColor: COLORS.primary500 };
+  }, [error, slippageDescriptionHighlight]);
+
   return (
     <View style={styles.container}>
       <SettingsInputWithLabel
@@ -65,6 +82,7 @@ export const SettingsSlippageForm = ({
         value={slippageTolerance}
         onChangeText={onChangeSlippageToleranceHandle}
         onBlur={onChangeSlippageBlur}
+        inputStyle={[styles.input, inputBorderStyle]}
       />
 
       {error && (
@@ -72,7 +90,7 @@ export const SettingsSlippageForm = ({
           <Typography
             fontSize={12}
             fontFamily="Onest500Medium"
-            color={COLORS.destructive500}
+            color={slippageDescriptionHighlight}
           >
             {error}
           </Typography>

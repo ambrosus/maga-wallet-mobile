@@ -5,7 +5,7 @@ import { PrimaryButton, TextOrSpinner } from '@components/molecules';
 import { COLORS } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
 import { useSwapInterface, useSwapMultiplyBalance } from '@core/dex/lib/hooks';
-import { buttonActionString } from '@core/dex/utils/button-action.string';
+import { buttonActionString } from '@core/dex/utils';
 
 function buttonStyles(disabled: boolean) {
   return {
@@ -92,6 +92,7 @@ export const ReviewSwapButton = () => {
       <TextOrSpinner
         label={swapButtonString}
         loadingLabel={undefined}
+        spinnerColor={COLORS.white}
         loading={
           isExecutingPrice ||
           isProcessingBottomSheet ||

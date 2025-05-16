@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { StyleProp, TextStyle, ViewStyle, View } from 'react-native';
+import { StyleProp, ViewStyle, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Spinner, Typography } from '@components/atoms';
-import { PrimaryButton, SecondaryButton } from '@components/molecules';
+import { RowContainer } from '@components/atoms';
+import { TextOrSpinner } from '@components/molecules';
 import { COLORS } from '@constants';
 import { useSwapContextSelector } from '@core/dex/context';
 import { AllowanceStatus } from '@core/dex/types';
@@ -42,30 +42,13 @@ export const ApprovalRequiredButton = ({
       const selectedTokens = latestSelectedTokens.current.TOKEN_A;
 
       return {
-        firstStep: t('swap.button.approve', {
+        firstStep: t('buttons.approve', {
           symbol: selectedTokens?.symbol
         }),
-        secondStep: t('swap.button.swap')
+        secondStep: t('swap.buttons.processSwap')
       };
     }
   }, [t, latestSelectedTokens, allowance]);
-
-  const firstStepTypographyStyle: StyleProp<TextStyle> = useMemo(() => {
-    return {
-      color: !multiStepButtonsDisabledStates.primary
-        ? COLORS.white
-        : COLORS.alphaBlack50
-    };
-  }, [multiStepButtonsDisabledStates.primary]);
-
-  const secondStepTypographyStyle: StyleProp<TextStyle> = useMemo(() => {
-    return {
-      color:
-        allowance === AllowanceStatus.INCREASE
-          ? COLORS.neutral400
-          : COLORS.white
-    };
-  }, [allowance]);
 
   const multiStepSecondaryButtonStyle: StyleProp<ViewStyle> = useMemo(() => {
     return {
@@ -73,29 +56,31 @@ export const ApprovalRequiredButton = ({
       backgroundColor:
         allowance === AllowanceStatus.INCREASED && !isProcessingSwap
           ? COLORS.primary500
-          : COLORS.alphaBlack5
+          : COLORS.primary300
     };
   }, [isProcessingSwap, allowance]);
 
   return (
-    <View style={styles.row}>
-      <PrimaryButton
-        style={styles.multiStepButton}
+    <RowContainer alignItems="center" gap={24}>
+      <TouchableOpacity
+        style={[styles.approveButton, styles.multiStepButton]}
         disabled={multiStepButtonsDisabledStates.primary}
         onPress={onCompleteMultiStepSwap}
       >
-        {isIncreasingAllowance ? (
-          <Spinner />
-        ) : (
-          <Typography
-            fontSize={16}
-            fontFamily="Onest600SemiBold"
-            style={firstStepTypographyStyle}
-          >
-            {multiStepButtonActionText?.firstStep}
-          </Typography>
-        )}
-      </PrimaryButton>
+        <TextOrSpinner
+          loading={isIncreasingAllowance}
+          label={multiStepButtonActionText?.firstStep || ''}
+          styles={{
+            active: {
+              fontSize: 16,
+              fontFamily: 'Onest600SemiBold',
+              color: multiStepButtonsDisabledStates.primary
+                ? COLORS.primary300
+                : COLORS.primary500
+            }
+          }}
+        />
+      </TouchableOpacity>
       {isPriceImpactHighlighted ? (
         <SwapErrorImpactButton
           isProcessingSwap={isProcessingSwap}
@@ -103,24 +88,26 @@ export const ApprovalRequiredButton = ({
           minimized
         />
       ) : (
-        <SecondaryButton
-          style={multiStepSecondaryButtonStyle}
+        <TouchableOpacity
+          style={[multiStepSecondaryButtonStyle, styles.swapButton]}
           disabled={multiStepButtonsDisabledStates.secondary}
           onPress={onCompleteMultiStepSwap}
         >
-          {isProcessingSwap ? (
-            <Spinner />
-          ) : (
-            <Typography
-              fontSize={16}
-              fontFamily="Onest600SemiBold"
-              style={secondStepTypographyStyle}
-            >
-              {multiStepButtonActionText?.secondStep}
-            </Typography>
-          )}
-        </SecondaryButton>
+          <TextOrSpinner
+            loading={isProcessingSwap}
+            label={multiStepButtonActionText?.secondStep || ''}
+            styles={{
+              active: {
+                fontSize: 16,
+                fontFamily: 'Onest600SemiBold',
+                color: multiStepButtonsDisabledStates.secondary
+                  ? COLORS.primary100
+                  : COLORS.white
+              }
+            }}
+          />
+        </TouchableOpacity>
       )}
-    </View>
+    </RowContainer>
   );
 };

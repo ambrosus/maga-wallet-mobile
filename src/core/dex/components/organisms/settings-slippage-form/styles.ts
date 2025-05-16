@@ -9,6 +9,9 @@ export const styles = StyleSheet.create({
   pressableContainer: {
     backgroundColor: COLORS.neutral100
   },
+  input: {
+    borderWidth: 1
+  },
   typography: {
     fontSize: FONT_SIZE.body.sm,
     fontFamily: FONTS.Onest500Medium,
